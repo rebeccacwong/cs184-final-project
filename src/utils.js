@@ -12,7 +12,11 @@ class Utils {
   }
 
   unit(vector) {
-    return math.multiply(1 / math.norm(vector), vector);
+    if (math.norm(vector) == 0) {
+      return [0, 0];
+    } else {
+      return math.multiply(1 / math.norm(vector), vector);
+    }
   }
 
   theta(vector1, vector2) {

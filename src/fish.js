@@ -15,20 +15,32 @@ class Fish {
 
     this.velocity = Math.random();
     this.acceleration = Math.random();
-    // this.velocity = Math.random() * 0.5;
-    // this.acceleration = Math.random() * 0.2;
   }
 
-  /** Constrains my position to be within the canvas/tank. */
+  /** Make fish appear on the other side of the tank */
   constrain() {
-    if (
-      this.pos[0] > WIDTH ||
-      this.pos[1] > HEIGHT ||
-      this.pos[0] < 0 ||
-      this.pos[1] < 0
-    ) {
-      this.dir = utils.generateDir();
+    if (this.pos[0] > WIDTH) {
+      this.pos[0] = 0;
     }
+    if (this.pos[0] < 0) {
+      this.pos[0] = WIDTH;
+    }
+    if (this.pos[1] > HEIGHT) {
+      this.pos[1] = 0;
+    }
+    if (this.pos[1] < 0) {
+      this.pos[1] = HEIGHT;
+    }
+
+    // if (
+    //   this.pos[0] > WIDTH ||
+    //   this.pos[0] > HEIGHT ||
+    //   this.pos[1] < 0 ||
+    //   this.pos[1] < 0
+    // ) {
+    //   // turn around
+    //   this.dir = math.subtract(0, this.dir);
+    // }
   }
 
   /** Draws the fish to the screen. */
@@ -46,12 +58,22 @@ class Fish {
     //   -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
     // );
     // imageMode(CORNER);
+
     image(
       FISH_IMAGE,
       this.pos[0],
       this.pos[1],
       FISH_DIMENSIONS[0],
       FISH_DIMENSIONS[1]
+    );
+  }
+
+  inTank(position) {
+    return (
+      position[0] <= WIDTH &&
+      position[1] >= 0 &&
+      position[0] >= 0 &&
+      position[1] <= HEIGHT
     );
   }
 
@@ -71,13 +93,14 @@ class Fish {
     console.log("other in inView is not a fish object!");
   }
 
-  /** Updates THIS.COHESION, THIS.ALIGNMENT with direction vectors for each steering force.
-   * Returns true if there have been any changes.
+  /** Updates THIS.COHESION, THIS.ALIGNMENT, and THIS.SEPARATION with direction vectors
+   * for each steering force. Returns true if there have been any changes.
    */
   computeBehaviors() {
-    var align = [0, 0]; // compute alignment
-    var cohesion = [0, 0];
-    var separation = [0, 0];
+    this.alignment = [0, 0];
+    this.cohesion = [0, 0];
+    this.separation = [0, 0];
+
     var count = 0;
     var sep_count = 0;
 
@@ -89,63 +112,63 @@ class Fish {
       if (this === fish) {
         // do nothing
       } else {
-        if (this.inView(fish)) {
-          // compute cohesion and alignment
+        if (this.inView(fish) && this.inTank(fish.pos)) {
+          // compute cohesion and alignment for fish that are visible
+          // and ignore all fish that are not in the tank (we shouldn't follow their behavior!!)
 
           var diff_pos = math.subtract(fish.pos, this.pos);
 
-          cohesion = math.add(cohesion, diff_pos);
-          align = math.add(align, fish.dir);
+          this.cohesion = math.add(this.cohesion, diff_pos);
+          this.alignment = math.add(this.alignment, fish.dir);
           count++;
 
-          // if (math.norm(diff_pos) <= SEPARATION_FACTOR) {
-          //   // apply separation, steer AWAY from the neighbor
-          //   separation = math.subtract(separation, diff_pos);
-          //   sep_count++;
-          // }
+          if (math.norm(diff_pos) <= SEPARATION_FACTOR) {
+            // apply separation, steer AWAY from the neighbor
 
-          // console.log(separation, diff_pos);
-          // console.log(math.subtract(separation, diff_pos));
+            var weight = 3 * (SEPARATION_FACTOR - math.norm(diff_pos)); // smaller distance will have more weight
+            var reversed = math.subtract(0, diff_pos);
+            this.separation = math.add(this.separation, reversed);
+            this.separation = math.multiply(weight, this.separation);
 
-          // console.log(diff_pos);
+            sep_count++;
+          }
         }
       }
     }
 
     if (count > 0) {
-      align[0] /= count;
-      align[1] /= count;
-      cohesion[0] /= count;
-      cohesion[1] /= count;
-      separation[0] /= sep_count;
-      separation[1] /= sep_count;
+      this.alignment[0] /= count;
+      this.alignment[1] /= count;
+      this.cohesion[0] /= count;
+      this.cohesion[1] /= count;
 
-      this.alignment = utils.unit(align);
-      this.cohesion = utils.unit(cohesion);
-      // this.separation = utils.unit(separation);
+      if (sep_count > 0) {
+        this.separation[0] /= sep_count;
+        this.separation[1] /= sep_count;
+      }
+
+      this.alignment = utils.unit(this.alignment);
+      this.cohesion = utils.unit(this.cohesion);
+      this.separation = utils.unit(this.separation);
 
       return true;
     }
+
     return false;
   }
 
   /** Changes the steering direction, DIR, of fish to steer towards the average heading of local flockmates */
   flock() {
     if (this.computeBehaviors()) {
-      // var co_align = utils.halfvector(this.cohesion, this.alignment);
-      // var alignment_scaled = [this.alignment[0] * 2, this.alignment[1] * 2];
-      // var co_align = math.add(this.cohesion, alignment_scaled);
-
-      // var sep_scaled = [this.separation[0] * 3, this.separation[1] * 2.5];
-      // var all = math.add(co_align, sep_scaled);
-      // var all = math.add(this.separation, this.cohesion);
-
-      // combine cohesion, alignment to get the final direction vector
-      this.dir = utils.unit(this.alignment);
-      // this.dir = utils.unit(all);
-
-      // this.dir = utils.unit(all);
-      // this.dir = utils.unit(this.separation);
+      var alignment_scaled = [this.alignment[0] * 1.5, this.alignment[1] * 1.5];
+      var co_align = math.add(
+        math.multiply(0.5, this.cohesion),
+        alignment_scaled
+      );
+      var sep_scaled = math.multiply(1.5, this.separation);
+      var all = math.add(co_align, sep_scaled);
+      this.dir = utils.unit(all);
+      this.theta = utils.theta(this.dir, [-1, 0]);
     }
   }
 
@@ -162,6 +185,6 @@ class Fish {
     this.velocity += this.acceleration;
     this.constrain();
 
-    this.acceleration = 0.05;
+    this.acceleration = 0.5;
   }
 }
