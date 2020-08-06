@@ -11,7 +11,7 @@ let SEPARATION_FACTOR = 70;
 const MAX_VELOCITY = 5;
 
 // input variables
-var NUM_FISH = 20;
+var NUM_FISH = 5;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
@@ -47,6 +47,15 @@ function draw() {
 
   clear();
   background(0, 51, 102);
+
+  //[1 / Math.sqrt(2), 1 / Math.sqrt(2)]
+  // var fish = new Fish(
+  //   [60, 60],
+  //   [1 / Math.sqrt(2), 1 / Math.sqrt(2)],
+  //   FOV,
+  //   VIEWING_DIST
+  // );
+  // fish.show();
 
   for (var i = 0; i < NUM_FISH; i++) {
     ALL_FISH[i].show();

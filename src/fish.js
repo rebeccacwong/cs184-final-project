@@ -45,27 +45,33 @@ class Fish {
 
   /** Draws the fish to the screen. */
   show() {
-    // imageMode(CENTER);
-    // translate(
-    //   this.pos[0] + FISH_DIMENSIONS[0] / 2,
-    //   this.pos[1] + FISH_DIMENSIONS[0] / 2
+    imageMode(CENTER);
+    // translate(this.pos[0] + WIDTH / 2, this.pos[1] + HEIGHT / 2); // translate to rectangle center
+    // // x = x + 0.5 * width
+    // // y = y + 0.5 * height
+    // rotate(this.theta); // rotate
+    // translate(-(this.pos[0] + WIDTH / 2), -(this.pos[1] + HEIGHT / 2)); // translate back
+    // image(
+    //   FISH_IMAGE,
+    //   this.pos[0],
+    //   this.pos[1],
+    //   FISH_DIMENSIONS[0],
+    //   FISH_DIMENSIONS[1]
     // );
-    // rotate(this.theta);
-    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
-    // rotate(this.theta);
-    // translate(
-    //   -(this.pos[0] + FISH_DIMENSIONS[0] / 2),
-    //   -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
-    // );
-    // imageMode(CORNER);
 
-    image(
-      FISH_IMAGE,
-      this.pos[0],
-      this.pos[1],
-      FISH_DIMENSIONS[0],
-      FISH_DIMENSIONS[1]
+    translate(
+      this.pos[0] + FISH_DIMENSIONS[0] / 2,
+      this.pos[1] + FISH_DIMENSIONS[0] / 2
     );
+    rotate(-this.theta);
+    image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+    rotate(this.theta);
+    translate(
+      -(this.pos[0] + FISH_DIMENSIONS[0] / 2),
+      -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
+    );
+    // imageMode(CORNER);
+    // imageMode(CENTER);
   }
 
   inTank(position) {
@@ -167,7 +173,16 @@ class Fish {
       );
       var sep_scaled = math.multiply(1.5, this.separation);
       var all = math.add(co_align, sep_scaled);
-      this.dir = utils.unit(all);
+      var new_dir = utils.unit(all);
+
+      // if (abs(utils.theta(this.dir, new_dir)) > 0.1) {
+      //   var weighted_new_dir = utils.unit(math.multiply(0.2, new_dir));
+      //   this.dir = utils.unit(math.add(this.dir, weighted_new_dir));
+      // }
+
+      // this.dir = utils.unit(math.add(this.dir, new_dir));
+      this.dir = utils.halfvector(new_dir, this.dir);
+
       this.theta = utils.theta(this.dir, [-1, 0]);
     }
   }
