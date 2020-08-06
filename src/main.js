@@ -1,14 +1,17 @@
 let FISH_IMAGE;
 var ALL_FISH = []; // array of all the fish objects
-const FISH_DIMENSIONS = [75, 50];
+const FISH_DIMENSIONS = [60, 40];
 let WIDTH = 0;
 let HEIGHT = 0;
 let utils = new Utils();
 let FOV = Math.PI; // range: [0, 2pi]
 let fps = 10;
+let VIEWING_DIST = 400;
+let SEPARATION_FACTOR = 300;
+const MAX_VELOCITY = 5;
 
 // input variables
-var NUM_FISH = 10;
+var NUM_FISH = 20;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
@@ -29,7 +32,8 @@ function setup() {
     fish = new Fish(
       [Math.random() * width, Math.random() * height],
       utils.generateDir(),
-      FOV
+      FOV,
+      VIEWING_DIST
     );
 
     ALL_FISH.push(fish);
@@ -42,7 +46,7 @@ function draw() {
   // loops
 
   clear();
-  background(30, 30, 47);
+  background(0, 51, 102);
 
   for (var i = 0; i < NUM_FISH; i++) {
     ALL_FISH[i].show();
