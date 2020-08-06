@@ -18,6 +18,7 @@ class Fish {
     // this.acceleration = Math.random() * 0.2;
   }
 
+  /** Constrains my position to be within the canvas/tank. */
   constrain() {
     if (
       this.pos[0] > WIDTH ||
@@ -29,6 +30,7 @@ class Fish {
     }
   }
 
+  /** Draws the fish to the screen. */
   show() {
     // imageMode(CENTER);
     // translate(
@@ -52,6 +54,7 @@ class Fish {
     );
   }
 
+  /** Checks if another fish, OTHER, is within my field of view. */
   inView(other) {
     if (other instanceof Fish) {
       var diffVec = math.subtract(other.pos, this.pos);
@@ -66,30 +69,36 @@ class Fish {
     console.log("other in inView is not a fish object!");
   }
 
+  /** Changes the steering direction, DIR, of fish to steer towards the average heading of local flockmates */
   computeAlignment() {
-    // Each unit should steer so as to try to assume a heading equal to the average heading of its neighbors.
-
     var heading = [0, 0];
     var count = 0;
-    // console.log(ALL_FISH);
+
+    // iterate through all fish
+    // TODO: if time, increase efficiency by partitioning the space so that you don't
+    // have to look through all fish, only the ones in its bounding box
     for (var i = 0; i < NUM_FISH; i++) {
       var fish = ALL_FISH[i];
       if (this === fish) {
         // do nothing
       } else {
         if (this.inView(fish)) {
+          // iterate through all neighbors
           heading = math.add(heading, fish.dir);
-          console.log(heading);
           count++;
         }
       }
     }
 
-    heading[0] /= count;
-    heading[1] /= count;
+    if (count > 0) {
+      heading[0] /= count;
+      heading[1] /= count;
 
-    this.dir = utils.unit(heading);
+      this.dir = utils.unit(heading);
+    }
   }
+
+  computeCohesion() {}
 
   update() {
     this.computeAlignment();

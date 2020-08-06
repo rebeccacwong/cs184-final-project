@@ -5,7 +5,7 @@ let WIDTH = 0;
 let HEIGHT = 0;
 let utils = new Utils();
 let FOV = Math.PI; // range: [0, 2pi]
-let fps = 20;
+let fps = 10;
 
 // input variables
 var NUM_FISH = 10;
@@ -17,7 +17,7 @@ function preload() {
 function setup() {
   // only happens once
 
-  createCanvas(1200, 800);
+  createCanvas(1400, 800);
   frameRate(fps);
   WIDTH = width;
   HEIGHT = height;
@@ -48,4 +48,22 @@ function draw() {
     ALL_FISH[i].show();
     ALL_FISH[i].update();
   }
+}
+
+function input(param, value) {
+  switch (param) {
+    case "numFish":
+      NUM_FISH = value;
+      break;
+    case "fov":
+      FOV = value;
+      break;
+    case "fps":
+      fps = value;
+      break;
+  }
+
+  ALL_FISH = [];
+  setup();
+  document.getElementById(param).innerHTML = value;
 }
