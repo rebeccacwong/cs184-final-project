@@ -8,6 +8,7 @@
 <script src=https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.1.1/math.js></script>
 
 <script src="src/utils.js"></script>
+<script src="src/collisionObject.js"></script>
 <script src="src/fish.js"></script>
 
 <html>
@@ -53,13 +54,13 @@
 
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Frames per Second <span class="badge badge-light" id="fps">10</span>
+        Frames per Second <span class="badge badge-light" id="fps">5</span>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" onclick="input('fps', 1)">1</a>
         <a class="dropdown-item" onclick="input('fps', 5)">5</a>
         <a class="dropdown-item" onclick="input('fps', 10)">10</a>
-        <a class="dropdown-item" onclick="input('fps', 25)">25</a>
+        <a class="dropdown-item" onclick="input('fps', 20)">20</a>
       </div>
     </div>
 

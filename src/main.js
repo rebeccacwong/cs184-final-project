@@ -5,13 +5,14 @@ let WIDTH = 0;
 let HEIGHT = 0;
 let utils = new Utils();
 let FOV = Math.PI; // range: [0, 2pi]
-let fps = 10;
+let fps = 5;
 let VIEWING_DIST = 600;
 let SEPARATION_FACTOR = 70;
 const MAX_VELOCITY = 5;
+let FOOD = [];
 
 // input variables
-var NUM_FISH = 5;
+var NUM_FISH = 20;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
@@ -39,7 +40,12 @@ function setup() {
     ALL_FISH.push(fish);
   }
 
-  console.log(ALL_FISH);
+  // console.log(ALL_FISH);
+}
+
+function showFood(pos) {
+  c = color(60, 179, 113);
+  ellipse(pos[0], pos[1], 10);
 }
 
 function draw() {
@@ -48,14 +54,16 @@ function draw() {
   clear();
   background(0, 51, 102);
 
-  //[1 / Math.sqrt(2), 1 / Math.sqrt(2)]
-  // var fish = new Fish(
-  //   [60, 60],
-  //   [1 / Math.sqrt(2), 1 / Math.sqrt(2)],
-  //   FOV,
-  //   VIEWING_DIST
-  // );
-  // fish.show();
+  if (mouseIsPressed) {
+    var pos = [mouseX, mouseY];
+    showFood(pos);
+    FOOD.push(pos);
+    console.log("food!");
+  }
+
+  for (var i = 0; i < FOOD.length; i++) {
+    showFood(FOOD[i]);
+  }
 
   for (var i = 0; i < NUM_FISH; i++) {
     ALL_FISH[i].show();
@@ -63,6 +71,7 @@ function draw() {
   }
 }
 
+/** Handles input from GUI. */
 function input(param, value) {
   switch (param) {
     case "numFish":

@@ -1,8 +1,12 @@
 class Fish {
-  /** Takes in a position, POS as a length 2 array
-   * and a direction vector, DIR, as a length 2 array
+  /**
+   * @param pos   length 2 array [x, y]
+   * @param dir   length 2 unit vector [x, y]
+   * @param fov   float representing the angle for field of view.
+   *              Must be in range [0, 2 * PI].
+   * @param dist  float representing the viewing distance that
+   *              the fish can see.
    */
-
   constructor(pos, dir, fov, dist) {
     this.initialPosition = pos;
     this.pos = pos;
@@ -13,8 +17,8 @@ class Fish {
     this.dir = dir;
     this.theta = utils.theta(this.dir, [-1, 0]);
 
-    this.velocity = Math.random();
-    this.acceleration = Math.random();
+    this.velocity = Math.random() * 2;
+    this.acceleration = Math.random() * 2;
   }
 
   /** Make fish appear on the other side of the tank */
@@ -46,18 +50,6 @@ class Fish {
   /** Draws the fish to the screen. */
   show() {
     imageMode(CENTER);
-    // translate(this.pos[0] + WIDTH / 2, this.pos[1] + HEIGHT / 2); // translate to rectangle center
-    // // x = x + 0.5 * width
-    // // y = y + 0.5 * height
-    // rotate(this.theta); // rotate
-    // translate(-(this.pos[0] + WIDTH / 2), -(this.pos[1] + HEIGHT / 2)); // translate back
-    // image(
-    //   FISH_IMAGE,
-    //   this.pos[0],
-    //   this.pos[1],
-    //   FISH_DIMENSIONS[0],
-    //   FISH_DIMENSIONS[1]
-    // );
 
     translate(
       this.pos[0] + FISH_DIMENSIONS[0] / 2,
@@ -70,10 +62,9 @@ class Fish {
       -(this.pos[0] + FISH_DIMENSIONS[0] / 2),
       -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
     );
-    // imageMode(CORNER);
-    // imageMode(CENTER);
   }
 
+  /** Returns true if the POSITION, as a 2-element array, is within the tank of size WIDTH x HEIGHT. */
   inTank(position) {
     return (
       position[0] <= WIDTH &&
@@ -175,13 +166,9 @@ class Fish {
       var all = math.add(co_align, sep_scaled);
       var new_dir = utils.unit(all);
 
-      // if (abs(utils.theta(this.dir, new_dir)) > 0.1) {
-      //   var weighted_new_dir = utils.unit(math.multiply(0.2, new_dir));
-      //   this.dir = utils.unit(math.add(this.dir, weighted_new_dir));
-      // }
-
       // this.dir = utils.unit(math.add(this.dir, new_dir));
       this.dir = utils.halfvector(new_dir, this.dir);
+      // this.dir = new_dir;
 
       this.theta = utils.theta(this.dir, [-1, 0]);
     }
@@ -200,6 +187,6 @@ class Fish {
     this.velocity += this.acceleration;
     this.constrain();
 
-    this.acceleration = 0.5;
+    this.acceleration = Math.random() * 2;
   }
 }
