@@ -1,5 +1,5 @@
 class Utils {
-  generateDir() {
+  static generateDir() {
     var dir = [Math.random(), Math.random()];
     if (Math.random() >= 0.5) {
       dir[0] *= -1;
@@ -11,7 +11,7 @@ class Utils {
     return dir;
   }
 
-  unit(vector) {
+  static unit(vector) {
     if (math.norm(vector) == 0) {
       return [0, 0];
     } else {
@@ -19,7 +19,7 @@ class Utils {
     }
   }
 
-  theta(vector1, normal) {
+  static theta(vector1, normal) {
     var perp = [-normal[1], normal[0]];
     if (math.dot(perp, normal) != 0) {
       alert("wrong perpendicular calculation in theta");
@@ -35,7 +35,7 @@ class Utils {
   }
 
   /** Returns the halfvector or bisector of VECTOR1, VECTOR2 as a unit vector. */
-  halfvector(vector1, vector2) {
+  static halfvector(vector1, vector2) {
     var sum = math.add(vector1, vector2);
     var divide = 1 / math.norm(sum);
     var halfvec = math.multiply(divide, sum);
