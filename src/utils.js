@@ -19,12 +19,8 @@ class Utils {
     }
   }
 
-  static theta(vector1, normal) {
+  static rotationTheta(vector1, normal) {
     var perp = [-normal[1], normal[0]];
-    if (math.dot(perp, normal) != 0) {
-      alert("wrong perpendicular calculation in theta");
-    }
-
     var cosine = math.dot(vector1, normal);
 
     if (math.dot(perp, vector1) < 0) {
@@ -32,6 +28,10 @@ class Utils {
     } else {
       return -acos(cosine);
     }
+  }
+
+  static theta(vector1, normal) {
+    return abs(this.rotationTheta(vector1, normal));
   }
 
   /** Returns the halfvector or bisector of VECTOR1, VECTOR2 as a unit vector. */

@@ -8,14 +8,14 @@ class Fish {
    *              the fish can see.
    */
   constructor(pos, dir, fov, dist) {
-    this.initialPosition = pos;
-    this.pos = pos;
+    var w = FISH_DIMENSIONS[0];
+    this.dir = Utils.unit(dir); // make sure that the direction is normalzed
+    this.theta = Utils.rotationTheta(this.dir, [-1, 0]);
+
     this.fov = fov;
     this.dist = dist;
-
-    math.multiply(1 / math.norm(dir), dir);
-    this.dir = dir;
-    this.theta = Utils.theta(this.dir, [-1, 0]);
+    this.pos = pos;
+    // this.pos = math.add(pos, math.multiply(w * 0.5, this.dir));
 
     this.velocity = Math.random() * 2;
     this.acceleration = Math.random() * 2;
@@ -81,9 +81,11 @@ class Fish {
       var d = math.norm(diffVec);
       diffVec = Utils.unit(diffVec);
       var theta = abs(Utils.theta(diffVec, this.dir));
-      // if (other instanceof CollisionObj) {
-      //   console.log(theta, diffVec, this.dir);
-      // }
+      if (other instanceof CollisionObj) {
+        if (theta <= FOV * 0.5 && d <= this.dist) {
+          console.log("food in view");
+        }
+      }
 
       // var minTheta = -FOV * 0.5;
       // var maxTheta = FOV * 0.5;
@@ -173,14 +175,15 @@ class Fish {
         if (this.inView(obj)) {
           var d = math.norm(diffVec);
 
-          if (d <= 5) {
+          if (d <= 4) {
             // close enough to the food that we will consider the food "eaten"
             // In this case, mark the food to be deleted and ignore it.
-            console.log("close");
             CollisionObj.TO_DELETE.push(obj);
+            console.log("eat", d);
           } else if (d < closest) {
             // always want to swim towards the closest piece of food
             count++;
+            console.log(d);
             closest = d;
             new_dir = Utils.unit(diffVec);
           }
@@ -227,7 +230,8 @@ class Fish {
     // update the steering behavior
     var collision_dir = this.considerObstacles();
     if (collision_dir) {
-      if (this.computeBehaviors) {
+      if (this.computeBehaviors == true) {
+        console.log("weighted");
         // take weighted average of collision_dir, separation, and current direction
         var weightedSum = math.add(
           math.multiply(4, this.separation),
@@ -236,13 +240,16 @@ class Fish {
         );
         this.dir = Utils.unit(math.multiply(1 / 3, weightedSum));
       } else {
-        var weightedSum = math.add(math.multiply(2, collision_dir), this.dir);
-        this.dir = Utils.unit(math.multiply(1 / 2, weightedSum));
+        // var weightedSum = math.add(math.multiply(2, collision_dir), this.dir);
+        // this.dir = Utils.unit(math.multiply(1 / 2, weightedSum));
+        console.log("follow food!");
+        this.dir = collision_dir;
+        console.log(this.dir);
       }
     } else {
       this.dir = this.flock();
     }
-    this.theta = Utils.theta(this.dir, [-1, 0]);
+    this.theta = Utils.rotationTheta(this.dir, [-1, 0]);
 
     // update the position and velocity
     if (math.abs(this.velocity) > MAX_VELOCITY) {

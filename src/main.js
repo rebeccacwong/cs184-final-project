@@ -7,7 +7,7 @@ let DROPDOWN = false;
 // global parameters
 let WIDTH = 0;
 let HEIGHT = 0;
-let FOV = Math.PI; // range: [0, 2pi]
+let FOV = Math.PI / 2; // range: [0, 2pi]
 let fps = 5;
 let VIEWING_DIST = 600;
 const FISH_DIMENSIONS = [35, 20];
@@ -15,7 +15,7 @@ const SEPARATION_FACTOR = 70;
 const MAX_VELOCITY = 5;
 
 // input variables
-var NUM_FISH = 20;
+var NUM_FISH = 1;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
@@ -48,12 +48,14 @@ function setup() {
   // console.log(ALL_FISH);
 }
 
+/** Adds food to the display and into memory. */
 function mouseClicked(event) {
   if (DROPDOWN) {
     DROPDOWN = false;
   } else {
-    var pos = [mouseX, mouseY];
-    var food = new CollisionObj(pos, 20, "food");
+    var x = mouseX;
+    var y = mouseY;
+    var food = new CollisionObj([x, y], 25, "food");
     CollisionObj.OBJS.push(food);
     food.show();
   }
@@ -65,25 +67,6 @@ function draw() {
 
   clear();
   background(0, 51, 102);
-
-  // if (mouseIsPressed) {
-  //   var expanded = [false];
-  //   $(".dropdown-toggle").each(function (i, dropdown, expanded) {
-  //     if ($(dropdown).attr("aria-expanded") == true) {
-  //       console.log("expanded");
-  //       expanded = [true];
-  //       return false;
-  //     }
-  //   });
-  //   console.log(expanded[0]);
-  //   // var isExpanded = $('#dropdownMenuButton').attr("aria-expanded");
-  //   if (!expanded[0]) {
-  //     var pos = [mouseX, mouseY];
-  //     var food = new CollisionObj(pos, 20, "food");
-  //     CollisionObj.OBJS.push(food);
-  //     food.show();
-  //   }
-  // }
 
   for (var i = 0; i < CollisionObj.TO_DELETE.length; i++) {
     var obj = CollisionObj.TO_DELETE[i];
@@ -107,6 +90,7 @@ function draw() {
 /** Handles input from GUI. */
 function input(param, value) {
   DROPDOWN = true;
+  document.getElementById(param).innerHTML = value;
 
   switch (param) {
     case "numFish":
@@ -114,6 +98,15 @@ function input(param, value) {
       break;
     case "fov":
       FOV = value;
+      if (value == PI / 4) {
+        document.getElementById(param).innerHTML = "45";
+      } else if (value == PI / 2) {
+        document.getElementById(param).innerHTML = "90";
+      } else if (value == PI) {
+        document.getElementById(param).innerHTML = "180";
+      } else {
+        document.getElementById(param).innerHTML = "270";
+      }
       break;
     case "fps":
       fps = value;
@@ -132,7 +125,6 @@ function input(param, value) {
 
   ALL_FISH = [];
   setup();
-  document.getElementById(param).innerHTML = value;
 }
 
 function hashPosition(pos) {
