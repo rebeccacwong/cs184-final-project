@@ -15,7 +15,7 @@ const SEPARATION_FACTOR = 70;
 const MAX_VELOCITY = 5;
 
 // input variables
-var NUM_FISH = 1;
+var NUM_FISH = 20;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
@@ -55,7 +55,7 @@ function mouseClicked(event) {
   } else {
     var x = mouseX;
     var y = mouseY;
-    var food = new CollisionObj([x, y], 25, "food");
+    var food = new CollisionObj([x, y], "food");
     CollisionObj.OBJS.push(food);
     food.show();
   }
@@ -81,8 +81,14 @@ function draw() {
     CollisionObj.OBJS[i].show();
   }
 
+  // var fish = new Fish([50, 50], [1 / sqrt(2), 1 / sqrt(2)], PI, 80);
+  // var fish = new Fish([50, 50], [1, 0], PI / 2, 80);
+  // fish.show();
+  // fish.showSteering();
+
   for (var i = 0; i < NUM_FISH; i++) {
     ALL_FISH[i].show();
+    // ALL_FISH[i].showSteering();
     ALL_FISH[i].update();
   }
 }

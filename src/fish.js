@@ -15,10 +15,9 @@ class Fish {
     this.fov = fov;
     this.dist = dist;
     this.pos = pos;
-    // this.pos = math.add(pos, math.multiply(w * 0.5, this.dir));
 
-    this.velocity = Math.random() * 2;
-    this.acceleration = Math.random() * 2;
+    this.velocity = Math.random() * 2.5;
+    this.acceleration = Math.random() * 2.5;
   }
 
   /** Keep fish within view by making them appear on the other side of the tank. */
@@ -50,18 +49,78 @@ class Fish {
   /** Draws the fish to the screen. */
   show() {
     imageMode(CENTER);
+    // image(
+    //   FISH_IMAGE,
+    //   this.pos[0],
+    //   this.pos[1],
+    //   FISH_DIMENSIONS[0],
+    //   FISH_DIMENSIONS[1]
+    // );
+    // image(
+    //   FISH_IMAGE,
+    //   this.pos[0],
+    //   this.pos[1],
+    //   FISH_DIMENSIONS[0],
+    //   FISH_DIMENSIONS[1]
+    // );
 
-    translate(
-      this.pos[0] + FISH_DIMENSIONS[0] / 2,
-      this.pos[1] + FISH_DIMENSIONS[0] / 2
-    );
-    rotate(-this.theta);
-    image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+    angleMode(RADIANS);
+    translate(this.pos[0], this.pos[1]);
+    push();
     rotate(this.theta);
-    translate(
-      -(this.pos[0] + FISH_DIMENSIONS[0] / 2),
-      -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
+    image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+    pop();
+    translate(-this.pos[0], -this.pos[1]);
+
+    // push();
+    // translate(-width / 2, -height / 2);
+    // pop();
+    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+
+    // translate(-width / 2, -height / 2);
+
+    // translate(WIDTH / 2, HEIGHT / 2);
+    // rotate(this.theta);
+    // imageMode(CENTER);
+    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+
+    // translate(
+    //   this.pos[0] + FISH_DIMENSIONS[0] / 2,
+    //   this.pos[1] + FISH_DIMENSIONS[0] / 2
+    // );
+    // console.log(this.theta);
+    // // rotate(-this.theta);
+    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+    // rotate(this.theta);
+    // // translate(
+    // //   -(this.pos[0] + FISH_DIMENSIONS[0] / 2),
+    // //   -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
+    // // );
+  }
+
+  /** Displays the direction vectors on the screen. */
+  showSteering() {
+    stroke(255);
+    ellipse(this.pos[0], this.pos[1], 5);
+    var to = math.add(this.pos, math.multiply(60, this.dir));
+    line(this.pos[0], this.pos[1], to[0], to[1]);
+
+    colorMode(RGB, 255, 255, 255, 1);
+    fill(255, 255, 255, 0.2);
+    stroke(255, 255, 255, 0.2);
+    // console.log(this.theta);
+    arc(
+      this.pos[0],
+      this.pos[1],
+      80,
+      80,
+      this.theta - PI - this.fov * 0.5,
+      this.theta - PI + this.fov * 0.5
     );
+
+    colorMode(RGB);
+    fill(255, 255, 255);
+    stroke(255, 255, 255);
   }
 
   /** Returns true if the POSITION, as a 2-element array, is within the tank of size WIDTH x HEIGHT. */
@@ -81,15 +140,6 @@ class Fish {
       var d = math.norm(diffVec);
       diffVec = Utils.unit(diffVec);
       var theta = abs(Utils.theta(diffVec, this.dir));
-      if (other instanceof CollisionObj) {
-        if (theta <= FOV * 0.5 && d <= this.dist) {
-          console.log("food in view");
-        }
-      }
-
-      // var minTheta = -FOV * 0.5;
-      // var maxTheta = FOV * 0.5;
-
       return theta <= FOV * 0.5 && d <= this.dist;
     }
     console.log("OTHER in inView function is not a Fish or a CollisionObj!");
@@ -179,11 +229,9 @@ class Fish {
             // close enough to the food that we will consider the food "eaten"
             // In this case, mark the food to be deleted and ignore it.
             CollisionObj.TO_DELETE.push(obj);
-            console.log("eat", d);
           } else if (d < closest) {
             // always want to swim towards the closest piece of food
             count++;
-            console.log(d);
             closest = d;
             new_dir = Utils.unit(diffVec);
           }
@@ -234,17 +282,14 @@ class Fish {
         console.log("weighted");
         // take weighted average of collision_dir, separation, and current direction
         var weightedSum = math.add(
-          math.multiply(4, this.separation),
+          math.multiply(5, this.separation),
           collision_dir,
           this.dir
         );
         this.dir = Utils.unit(math.multiply(1 / 3, weightedSum));
       } else {
-        // var weightedSum = math.add(math.multiply(2, collision_dir), this.dir);
-        // this.dir = Utils.unit(math.multiply(1 / 2, weightedSum));
-        console.log("follow food!");
-        this.dir = collision_dir;
-        console.log(this.dir);
+        var weightedSum = math.add(math.multiply(2, collision_dir), this.dir);
+        this.dir = Utils.unit(math.multiply(1 / 2, weightedSum));
       }
     } else {
       this.dir = this.flock();
@@ -261,6 +306,6 @@ class Fish {
     this.pos = math.add(this.pos, vec);
     this.velocity += this.acceleration;
     this.constrain();
-    this.acceleration = Math.random() * 2;
+    this.acceleration = Math.random() * 2.5;
   }
 }

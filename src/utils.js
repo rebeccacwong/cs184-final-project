@@ -24,9 +24,9 @@ class Utils {
     var cosine = math.dot(vector1, normal);
 
     if (math.dot(perp, vector1) < 0) {
-      return acos(cosine);
-    } else {
       return -acos(cosine);
+    } else {
+      return acos(cosine);
     }
   }
 
@@ -41,5 +41,14 @@ class Utils {
     var halfvec = math.multiply(divide, sum);
 
     return this.unit(halfvec);
+  }
+
+  static rotatePoint(point, theta) {
+    var rotationMatrix = math.matrix([
+      [cos(theta), -sin(theta)],
+      [sin(theta), cos(theta)],
+    ]);
+    var DenseM = math.multiply(rotationMatrix, point);
+    return DenseM._data;
   }
 }
