@@ -1,2 +1,161 @@
 <!DOCTYPE html>
-<html></html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<style>
+    h1, h2 {
+        text-align: center;
+    }
+    .center {
+        margin: 0 auto;
+        display: block;
+    }
+    .center-text {
+        text-align: center;
+    }
+</style>
+
+<html>
+
+    <div class="container banner p-5">
+        <!-- add an image and the title here -->
+        <h1 class="mt-3">School of Fish</h1>
+        <h2>Flocking Simulation</h2>
+        <h5 class="center-text mt-4"><span class="badge badge-info">CS184 Final Project by Rebecca Wong</span></h5>
+    </div>
+
+    <div class="container pr-3 pl-3">
+        <h4 class="center-text mt-4 mb-3">Abstract</h4>
+            <p>
+                Modeling flocks has a wide variety of applications. It can be used to model molecular behavior 
+                in science, simulate crowds to envision bottlenecks in a building plan, mimic natural movement 
+                of animal behavior, and can be used by animators to fill easily scenes with large masses of 
+                other characters. Therefore simulations with flocks or boids (bird-oid objects) can be adapted 
+                to fit many different purposes. 
+            </p>
+            <p>
+                In the following project, I simulated a visually realistic depiction of a school of fish 
+                (although this can be adapted to other creatures and items) using particle systems and the 
+                simple forces of classic flocks. I also applied obstacle avoidance and fish feeding features.
+            </p>
+        <h4 class="center-text mt-5 mb-3">Basic flocking behavior</h4>
+            <p>
+                Basic flocking behavior is dictated by the steering of the fish or the direction that they choose to 
+                move in. Craig Reynolds</a> outlined the movement of boids 
+                as being comprised of 3 simple steering behaviors. [Images from <a href="http://www.red3d.com/cwr/boids/">Craig Reynolds</a>]
+            </p>
+
+            <div class="row pt-4 pb-5 pr-5 pl-5">
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="images/separation.gif" class="card-img-top">
+                        <div class="card-body">
+                          <h5 class="card-title">Separation</h5>
+                          <p class="card-text">Steer to avoid crowding neighbors </p>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="images/alignment.gif" class="card-img-top">
+                        <div class="card-body">
+                          <h5 class="card-title">Alignment</h5>
+                          <p class="card-text">Steer towards the average heading of neighbors</p>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="images/cohesion.gif" class="card-img-top">
+                        <div class="card-body">
+                          <h5 class="card-title">Cohesion</h5>
+                          <p class="card-text">Steer to move toward the average position of neighbors</p>
+                        </div>
+                      </div>
+                </div>
+              </div>
+
+              <p>
+                  In addition, one thing to consider is the field of view of each fish. In reality, the fish
+                  cannot be perfectly informed of their surroundings. The fish can only make their decisions
+                  based off of what they know: their sight. The following images from 
+                  <a href="https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html">AI for Game Developers</a>
+                  depict the field of view for boids. The size affects the level of awareness that the fish 
+                  has of its surroundings. Additionally, I considered the depth of field: how far the fish could
+                  see along that field of view. The fish will only call another fish its "neighbor" (and thus 
+                  consider it when steering itself) if it is within view. 
+              </p>
+
+              <div class="row pt-4 pb-5 pr-5 pl-5">
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="images/narrow.jpg" class="card-img-top p-2">
+                        <div class="card-body">
+                          <h5 class="card-title center-text">Narrow field of view</h5>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="images/medium.jpg" class="card-img-top p-2">
+                        <div class="card-body">
+                            <h5 class="card-title center-text">Medium field of view</h5>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="images/wide.jpg" class="card-img-top p-2">
+                        <div class="card-body">
+                            <h5 class="card-title center-text">Wide field of view</h5>
+                        </div>
+                      </div>
+                </div>
+              </div>
+
+
+
+
+            <p>For each fish, I computed the steering directions according to each of the aforementioned factors, 
+                making sure to only consider neighbors (fish within view). The tricky part was combining them and 
+                finding a good balance of all three of the factors, as there can only be one final steering 
+                direction. I found that with equal weighting, the fish had a tendency to collide still, so I 
+                assigned greater weight to the separation steering direction. In addition, since I felt that 
+                the visual of the fish moving in one direction was important to conveying a visually realistic 
+                animation, I also assigned greater weight to the alignment steering direction.
+            </p>
+
+         <!-- TODO: Show only alignment-->
+         <!-- TODO: Show only cohesion-->
+         <!-- TODO: Show only separation-->
+            
+        <!-- TODO: Add comparison of different FOVs-->
+        <!-- TODO: Show FOV image -->
+
+        <h4 class="center-text mt-4 mb-3">Fish Food</h4>
+        <!-- TODO: Add comparison of different FOVs-->
+        <h4 class="center-text mt-4 mb-3">Obstacle Avoidance</h4>
+        <h4 class="center-text mt-4 mb-3">References</h4>
+        <ul>
+            <li><a href = "http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/">Flocks, Herds, and Schools: A Distributed Behavioral Model, Craig Reynolds</a></li>
+            <li><a href="https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html">AI for Game Developers by Glenn Seemann, David M Bourg: Chapter 4. Flocking</a></li>
+            <li><a href="https://gamedevelopment.tutsplus.com/tutorials/3-simple-rules-of-flocking-behaviors-alignment-cohesion-and-separation--gamedev-3444">3 Simple Rules of Flocking Behaviors: Alignment, Cohesion, and Separation, Vijay Pemmaraju</a></li>
+            <li><a href="https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732"> Understanding Steering Behaviors, Fernando Bevilacqua</a></li>
+        </ul>
+
+    </div>
+
+</html>

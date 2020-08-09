@@ -9,6 +9,7 @@ let WIDTH = 0;
 let HEIGHT = 0;
 let FOV = Math.PI / 2; // range: [0, 2pi]
 let fps = 5;
+let MODE = "default";
 let VIEWING_DIST = 600;
 const FISH_DIMENSIONS = [35, 20];
 const SEPARATION_FACTOR = 70;
@@ -88,7 +89,9 @@ function draw() {
 
   for (var i = 0; i < NUM_FISH; i++) {
     ALL_FISH[i].show();
-    // ALL_FISH[i].showSteering();
+    if (MODE == "steering") {
+      ALL_FISH[i].showSteering();
+    }
     ALL_FISH[i].update();
   }
 }
@@ -127,6 +130,14 @@ function input(param, value) {
         document.getElementById(param).innerHTML = "long";
       }
       break;
+    case "mode":
+      MODE = value;
+      if (value == "default") {
+        document.getElementById(param).innerHTML = "Default";
+      } else {
+        document.getElementById(param).innerHTML = "Show Steering";
+      }
+      return;
   }
 
   ALL_FISH = [];

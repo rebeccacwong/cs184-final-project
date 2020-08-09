@@ -19,6 +19,16 @@
 
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Viewing Mode <span class="badge badge-light" id="mode">Default</span>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" onclick="input('mode', 'default')">Default</a>
+        <a class="dropdown-item" onclick="input('mode', 'steering')">Show Steering</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Number of Fish <span class="badge badge-light" id="numFish">20</span>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
