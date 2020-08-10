@@ -1,7 +1,8 @@
 // tools
 let FISH_IMAGE;
+let FISH_FRAMES = [];
+let CURR_FRAME = 0;
 let BACKGROUND;
-let FISH_OBJ;
 let SPATIAL_MAP = {};
 let ALL_FISH = []; // array of all the fish objects
 let DROPDOWN = false;
@@ -10,21 +11,22 @@ let DROPDOWN = false;
 let WIDTH = 0;
 let HEIGHT = 0;
 let FOV = Math.PI / 2; // range: [0, 2pi]
-let fps = 5;
 let MODE = "default";
 let VIEWING_DIST = 600;
-const FISH_DIMENSIONS = [45, 25];
-// const FISH_DIMENSIONS = [70, 40];
+// const FISH_DIMENSIONS = [45, 25];
+const FISH_DIMENSIONS = [60, 35];
 const SEPARATION_FACTOR = 70;
-const MAX_VELOCITY = 5;
+const MAX_VELOCITY = 6;
 
 // input variables
 var NUM_FISH = 20;
 
 function preload() {
-  FISH_IMAGE = loadImage("../scene/fish.png");
-  BACKGROUND = loadImage("../scene/aquarium.jpg");
-  // FISH_OBJ = loadModel("../scene/fish.obj", true);
+  // FISH_IMAGE = loadImage("../scene/fish.png");
+  // BACKGROUND = loadImage("../scene/aquarium.jpg");
+  FISH_FRAMES.push(loadImage("../scene/fish1.png"));
+  FISH_FRAMES.push(loadImage("../scene/fish2.png"));
+  FISH_FRAMES.push(loadImage("../scene/fish3.png"));
 }
 
 function setup() {
@@ -35,7 +37,7 @@ function setup() {
   CollisionObj.TO_DELETE = [];
 
   createCanvas(1400, 1000);
-  frameRate(fps);
+  frameRate(14);
   WIDTH = width;
   HEIGHT = height;
 
@@ -51,11 +53,8 @@ function setup() {
     ALL_FISH.push(fish);
   }
 
-  // ADD COLLISION OBJECTS TO THE SCENE
+  // add collision objects to the scene
   new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
-
-  console.log(CollisionObj.OBJS);
-  console.log(ALL_FISH);
 }
 
 /** Adds food to the display and into memory. */
@@ -66,15 +65,11 @@ function mouseClicked(event) {
     var x = mouseX;
     var y = mouseY;
     var food = new CollisionObj([x, y], "food");
-    console.log(CollisionObj.OBJS);
 
     for (var i = 0; i < CollisionObj.OBJS.length; i++) {
       var obj = CollisionObj.OBJS[i];
-      console.log(obj.inside([x, y], 10));
-      console.log("here");
       if (obj.isObstacle && obj.inside([x, y])) {
         food.ignore = true;
-        console.log("ignore");
       }
     }
 
