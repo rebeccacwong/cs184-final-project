@@ -7,9 +7,10 @@ class CollisionObj {
    * @param width float, the width or diameter of the object
    * @param type string, should either be "food" or "obstacle"
    */
-  constructor(pos, type, width = 10) {
+  constructor(pos, type, diameter = 10) {
     this.pos = pos;
-    this.width = width;
+    this.radius = diameter / 2;
+    this.radius2 = this.radius * this.radius;
 
     if (type == "obstacle") {
       this.isFood = false;
@@ -22,14 +23,19 @@ class CollisionObj {
         "Invalid input for CollisionObj constructor's TYPE parameter."
       );
     }
+
+    CollisionObj.OBJS.push(this);
   }
 
   /** Draws object to the scene. */
   show() {
+    noStroke();
     if (this.isFood) {
       ellipse(this.pos[0], this.pos[1], 8);
     } else {
-      ellipse(this.pos[0], this.pos[1], width);
+      fill(255, 0, 0);
+      ellipse(this.pos[0], this.pos[1], this.radius * 2);
+      fill(255, 255, 255);
     }
   }
 }

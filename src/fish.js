@@ -71,31 +71,6 @@ class Fish {
     image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
     pop();
     translate(-this.pos[0], -this.pos[1]);
-
-    // push();
-    // translate(-width / 2, -height / 2);
-    // pop();
-    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
-
-    // translate(-width / 2, -height / 2);
-
-    // translate(WIDTH / 2, HEIGHT / 2);
-    // rotate(this.theta);
-    // imageMode(CENTER);
-    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
-
-    // translate(
-    //   this.pos[0] + FISH_DIMENSIONS[0] / 2,
-    //   this.pos[1] + FISH_DIMENSIONS[0] / 2
-    // );
-    // console.log(this.theta);
-    // // rotate(-this.theta);
-    // image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
-    // rotate(this.theta);
-    // // translate(
-    // //   -(this.pos[0] + FISH_DIMENSIONS[0] / 2),
-    // //   -(this.pos[1] + FISH_DIMENSIONS[0] / 2)
-    // // );
   }
 
   /** Displays the direction vectors on the screen. */
@@ -209,6 +184,40 @@ class Fish {
     return false;
   }
 
+  /** Checks to see if I will eventually intersect with OBJ given that I stay
+   * on course in direction THIS.DIR. Returns the distance to the intersection.
+   * Otherwise returns false.
+   */
+  checkIntersection(obj) {
+    if (obj instanceof CollisionObj) {
+      var a = math.dot(this.dir, this.dir);
+      var b = math.dot(
+        math.multiply(2, math.subtract(this.pos, obj.pos)),
+        this.dir
+      );
+      var c =
+        math.dot(
+          math.subtract(this.pos, obj.pos),
+          math.subtract(this.pos, obj.pos)
+        ) - obj.radius2;
+      var t1 = (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
+      var t2 = (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
+
+      var t = Math.min(t1, t2); // want to use closest intersection
+      // var d = math.norm(math.multiply(t, this.dir)); // distance to intersection
+
+      // console.log(t);
+      if (!isNaN(t) && t >= 0 && t && t <= this.dist) {
+        // console.log("intersection");
+        return t;
+      } else {
+        return false;
+      }
+    }
+    console.log("Input to checkIntersection must be a CollisionObj!");
+    return false;
+  }
+
   /** Returns the steering direction dictated by potential collision objects
    * (food and obstacles). If there are no collision obstacles, returns false.
    * Does not modify any instance attributes. */
@@ -221,10 +230,11 @@ class Fish {
     for (var i = 0; i < CollisionObj.OBJS.length; i++) {
       var obj = CollisionObj.OBJS[i];
       var diffVec = math.subtract(obj.pos, this.pos);
-      if (obj.isFood) {
-        if (this.inView(obj)) {
-          var d = math.norm(diffVec);
+      var d;
 
+      if (this.inView(obj)) {
+        d = math.norm(diffVec);
+        if (obj.isFood) {
           if (d <= 4) {
             // close enough to the food that we will consider the food "eaten"
             // In this case, mark the food to be deleted and ignore it.
@@ -235,9 +245,35 @@ class Fish {
             closest = d;
             new_dir = Utils.unit(diffVec);
           }
+        } else {
+          //handle collisions
+          d = this.checkIntersection(obj);
+          if (d != false && d < closest) {
+            count++;
+            closest = d;
+            var hit = math.add(this.pos, math.multiply(d, this.dir));
+
+            var avoid_vec = Utils.unit([
+              -(hit[1] - this.pos[1]),
+              hit[0] - this.pos[0],
+            ]); // direction vector
+            avoid_vec = math.multiply(obj.radius + 50, avoid_vec); // 50 is arbitrary, adds space between fish & obstacle
+
+            if (MODE == "steering") {
+              stroke(0, 255, 0);
+              fill(0, 255, 0);
+              ellipse(hit[0], hit[1], 10);
+              stroke(255, 0, 0);
+
+              fill(255, 255, 255);
+              stroke(255, 255, 255);
+            }
+
+            var to = math.add(avoid_vec, obj.pos);
+            new_dir = math.subtract(to, this.pos);
+            line(this.pos[0], this.pos[1], to[0], to[1]);
+          }
         }
-      } else {
-        // handle collision objects
       }
     }
 
@@ -279,7 +315,6 @@ class Fish {
     var collision_dir = this.considerObstacles();
     if (collision_dir) {
       if (this.computeBehaviors == true) {
-        console.log("weighted");
         // take weighted average of collision_dir, separation, and current direction
         var weightedSum = math.add(
           math.multiply(5, this.separation),

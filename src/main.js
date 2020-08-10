@@ -1,5 +1,7 @@
 // tools
 let FISH_IMAGE;
+let BACKGROUND;
+let FISH_OBJ;
 let SPATIAL_MAP = {};
 let ALL_FISH = []; // array of all the fish objects
 let DROPDOWN = false;
@@ -11,15 +13,18 @@ let FOV = Math.PI / 2; // range: [0, 2pi]
 let fps = 5;
 let MODE = "default";
 let VIEWING_DIST = 600;
-const FISH_DIMENSIONS = [35, 20];
+const FISH_DIMENSIONS = [45, 25];
+// const FISH_DIMENSIONS = [70, 40];
 const SEPARATION_FACTOR = 70;
 const MAX_VELOCITY = 5;
 
 // input variables
-var NUM_FISH = 20;
+var NUM_FISH = 1;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
+  BACKGROUND = loadImage("../scene/aquarium.jpg");
+  // FISH_OBJ = loadModel("../scene/fish.obj", true);
 }
 
 function setup() {
@@ -46,7 +51,11 @@ function setup() {
     ALL_FISH.push(fish);
   }
 
-  // console.log(ALL_FISH);
+  // ADD COLLISION OBJECTS TO THE SCENE
+  new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
+
+  console.log(CollisionObj.OBJS);
+  console.log(ALL_FISH);
 }
 
 /** Adds food to the display and into memory. */
@@ -57,7 +66,6 @@ function mouseClicked(event) {
     var x = mouseX;
     var y = mouseY;
     var food = new CollisionObj([x, y], "food");
-    CollisionObj.OBJS.push(food);
     food.show();
   }
   return false;
@@ -68,6 +76,7 @@ function draw() {
 
   clear();
   background(0, 51, 102);
+  // image(BACKGROUND, WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT);
 
   for (var i = 0; i < CollisionObj.TO_DELETE.length; i++) {
     var obj = CollisionObj.TO_DELETE[i];
