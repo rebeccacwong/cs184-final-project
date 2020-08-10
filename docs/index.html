@@ -16,6 +16,9 @@ MathJax = {
 </script>
 
 <style>
+    html{
+      padding-bottom: 5em;
+    }
     h1, h2 {
         text-align: center;
     }
@@ -219,29 +222,39 @@ MathJax = {
             </p>
             <p>
               I chose to only use the new direction (that avoids the obstacle) and the separation direction to compute the final 
-              steering direction.
+              steering direction, for the same reasoning as with the food.
             </p>
           </div>
         </div>
-        <span class="badge badge-danger">ADD RESULTS</span>
+        <span class="badge badge-danger">ADD RESULTS</span><br />
 
         <b>Edge cases</b>
         <p>
           In the case of food AND an obstacle, the fish will prioritize the closest object. In this case, the fish will still be 
           able to eat food that is very close to the obstacle, and then swerve. In addition, if the food is inside an obstacle or 
-          adequately close to it such that the fish will not be able to swerve in time to eat the food, the fish will ignore the
+          adequately close to it such that the fish will not be able to swerve without collision, the fish will ignore the
           food.
         </p>
         <span class="badge badge-danger">SHOW FOOD INSIDE THE OBSTACLE</span>
+
+      <h4 class="center-text mt-4 mb-3">Room for Improvement</h4>
+      <p>
+        As I worked on the project I observed possible ways to improve it that I did not have time to implement it given the
+        timeline of the course. Here are a few of them:
+      </p>
+      <ul>
+        <li>Improve runtime of neighbor search by partitioning the scene</a></li>
+        <li>Dynamically change the velocity of fish to further reduce collisions</li>
+    </ul>
         
         
-        <h4 class="center-text mt-4 mb-3">References</h4>
-        <ul>
-            <li><a href = "http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/">Flocks, Herds, and Schools: A Distributed Behavioral Model, Craig Reynolds</a></li>
-            <li><a href="https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html">AI for Game Developers by Glenn Seemann, David M Bourg: Chapter 4. Flocking</a></li>
-            <li><a href="https://gamedevelopment.tutsplus.com/tutorials/3-simple-rules-of-flocking-behaviors-alignment-cohesion-and-separation--gamedev-3444">3 Simple Rules of Flocking Behaviors: Alignment, Cohesion, and Separation, Vijay Pemmaraju</a></li>
-            <li><a href="https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732"> Understanding Steering Behaviors, Fernando Bevilacqua</a></li>
-        </ul>
+      <h4 class="center-text mt-4 mb-3">References</h4>
+      <ul>
+          <li><a href = "http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/">Flocks, Herds, and Schools: A Distributed Behavioral Model, Craig Reynolds</a></li>
+          <li><a href="https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html">AI for Game Developers by Glenn Seemann, David M Bourg: Chapter 4. Flocking</a></li>
+          <li><a href="https://gamedevelopment.tutsplus.com/tutorials/3-simple-rules-of-flocking-behaviors-alignment-cohesion-and-separation--gamedev-3444">3 Simple Rules of Flocking Behaviors: Alignment, Cohesion, and Separation, Vijay Pemmaraju</a></li>
+          <li><a href="https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732"> Understanding Steering Behaviors, Fernando Bevilacqua</a></li>
+      </ul>
 
     </div>
 
