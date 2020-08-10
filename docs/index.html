@@ -26,6 +26,9 @@ MathJax = {
     .center-text {
         text-align: center;
     }
+    img {
+      width: 100%;
+    }
 </style>
 
 <html>
@@ -137,6 +140,14 @@ MathJax = {
                 the visual of the fish moving in one direction was important to conveying a visually realistic 
                 animation, I also assigned greater weight to the alignment steering direction.
             </p>
+            <p>
+              However, there were some situations where the fish would be conflicted and want to go in two different
+              directions and they would keep turning from side to side. To minimize this effect, the final steering
+              direction is the halfvector between the current steering direction and unit vector combining the flocking
+              components.
+            </p>
+
+            <span class="badge badge-danger">ADD RESULTS</span>
 
          <!-- TODO: Show only alignment-->
          <!-- TODO: Show only cohesion-->
@@ -146,8 +157,84 @@ MathJax = {
         <!-- TODO: Show FOV image -->
 
         <h4 class="center-text mt-4 mb-3">Fish Food</h4>
-        <!-- TODO: Add comparison of different FOVs-->
+            <p>To implement the behavior of fish feeding, I first updated the GUI so that clicking would add a new piece of food where
+              the mouse clicked. 
+            </p>
+            <p>
+              To change the behavior of the fish when food was present, I again considered only the food within the fish's field of 
+              view. If there was no food in view, the fish would use the default flocking steering outlined in the previous section.
+              The fish would choose to move towards the food that is closest to it. Therefore when there is a lot of food, the
+              fish will move in a way that maximizes its ability to reach as much food as possible. 
+            </p>
+            <p>
+              I computed the direction that the fish needed to go in to reach the closest piece of food by simply creating a unit vector 
+              from the fish's position to the food's position. In order to apply use that vector to compute the final direction that 
+              the fish would ultimately go in, I applied a weighted average between the separation steering vector and the vector 
+              towards the food. I gave the separation a greater weight as with all the fish moving towards the food it tends to 
+              cause collisions.  I also chose to omit the cohesion and alignment factors of flocking behavior as the movement towards 
+              the food would inherently cause that behavior since all the fish are moving towards the same position: the food.
+            </p>
+            <p>
+              In order for the fish to "eat" the food once it reached it, I checked to see if the fish was within a certain distance
+              from the food using a small constant (to account for the fact that the fish is much larger than its position/centroid).
+              If the fish was close enough, I considered the food "eaten" and removed it from the GUI and from memory. As a result,
+              the fish would return to their normal flocking behavior once they ate the food.
+            </p>
+
+            <h5 class="center-text">Effect of different FOVs on feeding behavior</h5>
+            <p>
+              The results below depict how the fish will only swim towards food within their field of view. As expected, the
+              fish with a wider field of view are better at scavenging food. 
+            </p>
+            <span class="badge badge-danger">ADD RESULTS</span>
+            <!-- TODO: Add comparison of different FOVs-->
+            <h5 class="center-text">Dealing with multiple fish flakes</h5>
+            <span class="badge badge-danger">ADD RESULTS</span>
+
         <h4 class="center-text mt-4 mb-3">Obstacle Avoidance</h4>
+        <p>
+          For obstacle avoidance, I used a combination of techniques outlined in 
+          <a href = "https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777">
+            is article</a> and techniques borrowed from raytracing. First, I checked to see if the fish would eventually hit an
+            obstacle, given the current steering direction, by applying an intersection test with the obstacle. In this case,
+            the "ray" was cast from the fish towards the obstacle. Since my obstacles were spheres, I applied the ray intersection
+            test with spheres outlined in <a href = "https://cs184.eecs.berkeley.edu/sp18/lecture/ray-intro/slide_024">the raytracing
+            lecture</a>. The obstacle that was most threatening and therefore most important to dodge, was the one with closest 
+            intersection point (the black dot in the image below) among all possible obstacle intersections. 
+        </p>
+        <div class="row pt-4 pb-5 pr-5 pl-5">
+          <div class="col-sm">
+            <img src = "images/avoidance.png" class="center"/>
+          </div>
+          <div class="col-sm">
+            <p>
+              <b>One the most threatening object was identified, the fish need to redirect themselves to avoid it.</b>
+            </p>
+            <p>
+              I calculated an
+              avoidance vector (in red), a perpendicular vector to the original direction. The length of the avoidance vector is
+              the radius of the obstacle plus a small constant (so that the fish doesn't get too close to the object). The avoidance
+              vector is used to calculate the point where the green and red vector touch, as the new direction is a vector from the 
+              fish's position to that point. 
+            </p>
+            <p>
+              I chose to only use the new direction (that avoids the obstacle) and the separation direction to compute the final 
+              steering direction.
+            </p>
+          </div>
+        </div>
+        <span class="badge badge-danger">ADD RESULTS</span>
+
+        <b>Edge cases</b>
+        <p>
+          In the case of food AND an obstacle, the fish will prioritize the closest object. In this case, the fish will still be 
+          able to eat food that is very close to the obstacle, and then swerve. In addition, if the food is inside an obstacle or 
+          adequately close to it such that the fish will not be able to swerve in time to eat the food, the fish will ignore the
+          food.
+        </p>
+        <span class="badge badge-danger">SHOW FOOD INSIDE THE OBSTACLE</span>
+        
+        
         <h4 class="center-text mt-4 mb-3">References</h4>
         <ul>
             <li><a href = "http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/">Flocks, Herds, and Schools: A Distributed Behavioral Model, Craig Reynolds</a></li>

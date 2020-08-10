@@ -19,7 +19,7 @@ const SEPARATION_FACTOR = 70;
 const MAX_VELOCITY = 5;
 
 // input variables
-var NUM_FISH = 1;
+var NUM_FISH = 20;
 
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
@@ -66,6 +66,18 @@ function mouseClicked(event) {
     var x = mouseX;
     var y = mouseY;
     var food = new CollisionObj([x, y], "food");
+    console.log(CollisionObj.OBJS);
+
+    for (var i = 0; i < CollisionObj.OBJS.length; i++) {
+      var obj = CollisionObj.OBJS[i];
+      console.log(obj.inside([x, y], 10));
+      console.log("here");
+      if (obj.isObstacle && obj.inside([x, y])) {
+        food.ignore = true;
+        console.log("ignore");
+      }
+    }
+
     food.show();
   }
   return false;
@@ -154,8 +166,6 @@ function input(param, value) {
 }
 
 function hashPosition(pos) {
-  var numObjs = NUM_FISH + FOOD.length;
-
   // need entire area of SEPARATION_FACTOR x SEPARATION_FACTOR included into spatial map
 }
 

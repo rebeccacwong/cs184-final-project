@@ -49,21 +49,6 @@ class Fish {
   /** Draws the fish to the screen. */
   show() {
     imageMode(CENTER);
-    // image(
-    //   FISH_IMAGE,
-    //   this.pos[0],
-    //   this.pos[1],
-    //   FISH_DIMENSIONS[0],
-    //   FISH_DIMENSIONS[1]
-    // );
-    // image(
-    //   FISH_IMAGE,
-    //   this.pos[0],
-    //   this.pos[1],
-    //   FISH_DIMENSIONS[0],
-    //   FISH_DIMENSIONS[1]
-    // );
-
     angleMode(RADIANS);
     translate(this.pos[0], this.pos[1]);
     push();
@@ -141,7 +126,6 @@ class Fish {
       } else {
         if (this.inView(fish) && this.inTank(fish.pos)) {
           // compute cohesion and alignment for fish that are visible
-          // and ignore all fish that are not in the tank (we shouldn't follow their behavior!!)
 
           var diff_pos = math.subtract(fish.pos, this.pos);
 
@@ -184,9 +168,9 @@ class Fish {
     return false;
   }
 
-  /** Checks to see if I will eventually intersect with OBJ given that I stay
-   * on course in direction THIS.DIR. Returns the distance to the intersection.
-   * Otherwise returns false.
+  /** Checks to see if I will eventually intersect with OBJ (of type CollisionObj)
+   *  given that I stay on course in direction THIS.DIR. Returns the distance to
+   * the intersection. Otherwise returns false.
    */
   checkIntersection(obj) {
     if (obj instanceof CollisionObj) {
@@ -204,11 +188,8 @@ class Fish {
       var t2 = (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
 
       var t = Math.min(t1, t2); // want to use closest intersection
-      // var d = math.norm(math.multiply(t, this.dir)); // distance to intersection
 
-      // console.log(t);
       if (!isNaN(t) && t >= 0 && t && t <= this.dist) {
-        // console.log("intersection");
         return t;
       } else {
         return false;
@@ -222,7 +203,6 @@ class Fish {
    * (food and obstacles). If there are no collision obstacles, returns false.
    * Does not modify any instance attributes. */
   considerObstacles() {
-    // choose to give collision objects priority over food
     var new_dir = this.dir;
     var closest = Infinity;
     var count = 0; // number of collision objects that are relevant (existing AND in view)
@@ -234,10 +214,9 @@ class Fish {
 
       if (this.inView(obj)) {
         d = math.norm(diffVec);
-        if (obj.isFood) {
+        if (obj.isFood && !obj.ignore) {
           if (d <= 4) {
             // close enough to the food that we will consider the food "eaten"
-            // In this case, mark the food to be deleted and ignore it.
             CollisionObj.TO_DELETE.push(obj);
           } else if (d < closest) {
             // always want to swim towards the closest piece of food
@@ -258,20 +237,19 @@ class Fish {
               hit[0] - this.pos[0],
             ]); // direction vector
             avoid_vec = math.multiply(obj.radius + 50, avoid_vec); // 50 is arbitrary, adds space between fish & obstacle
+            var to = math.add(avoid_vec, obj.pos);
+            new_dir = math.subtract(to, this.pos);
 
             if (MODE == "steering") {
-              stroke(0, 255, 0);
-              fill(0, 255, 0);
+              stroke(0, 0, 0);
+              fill(0, 0, 0);
               ellipse(hit[0], hit[1], 10);
-              stroke(255, 0, 0);
+              stroke(0, 255, 0);
+              line(this.pos[0], this.pos[1], to[0], to[1]);
 
               fill(255, 255, 255);
               stroke(255, 255, 255);
             }
-
-            var to = math.add(avoid_vec, obj.pos);
-            new_dir = math.subtract(to, this.pos);
-            line(this.pos[0], this.pos[1], to[0], to[1]);
           }
         }
       }
@@ -317,7 +295,7 @@ class Fish {
       if (this.computeBehaviors == true) {
         // take weighted average of collision_dir, separation, and current direction
         var weightedSum = math.add(
-          math.multiply(5, this.separation),
+          math.multiply(6, this.separation),
           collision_dir,
           this.dir
         );
