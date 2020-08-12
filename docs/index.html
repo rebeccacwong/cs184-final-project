@@ -132,12 +132,9 @@ MathJax = {
                 </div>
               </div>
 
-
-
-
             <p>For each fish, I computed the steering directions according to each of the aforementioned factors, 
-                making sure to only consider neighbors (fish within view). The tricky part was combining them and 
-                finding a good balance of all three of the factors, as there can only be one final steering 
+                making sure to only consider neighbors (fish within view). <b>The tricky part was combining them and 
+                finding a good balance of all three of the factors</b>, as there can only be one final steering 
                 direction. I found that with equal weighting, the fish had a tendency to collide still, so I 
                 assigned greater weight to the separation steering direction. In addition, since I felt that the 
                 visual of the fish moving in one direction was important to conveying a visually realistic animation, 
@@ -145,9 +142,9 @@ MathJax = {
             </p>
             <p>
               However, I did notice that a drawback of the higher weighting of the separation steering was that the fish
-              on the outer edges of the school had a tendency to stray. To try and fix that, I dynamically changed the 
+              on the outer edges of the school had a tendency to stray. To try and fix that, <b>I dynamically changed the 
               velocity of the fish. If the average position of all of its neighbors was very far, the fish increased its
-              velocity in order to catch up with the school. I found that this helped in getting the fish to align themselves
+              velocity in order to catch up with the school. </b>I found that this helped in getting the fish to align themselves
               to other schools quicker if they ended up straying. 
             </p>
             <p>
@@ -156,8 +153,6 @@ MathJax = {
               direction is the halfvector between the current steering direction and unit vector combining the flocking
               components.
             </p>
-
-            <span class="badge badge-danger">ADD RESULTS</span>
 
             <div class="row pt-4 pb-5 pr-5 pl-5">
               <div class="col-sm">
@@ -189,12 +184,10 @@ MathJax = {
               </div>
             </div>
 
-         <!-- TODO: Show only alignment-->
-         <!-- TODO: Show only cohesion-->
-         <!-- TODO: Show only separation-->
-            
-        <!-- TODO: Add comparison of different FOVs-->
-        <!-- TODO: Show FOV image -->
+            <h5 class="center-text">Combination of all 3 factors</h5>
+            <iframe src="https://player.vimeo.com/video/447258075" width="640" height="360" class="center" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+            <br />
 
         <h4 class="center-text mt-4 mb-3">Fish Food</h4>
             <p>To implement the behavior of fish feeding, I first updated the GUI so that clicking would add a new piece of food where
@@ -221,11 +214,48 @@ MathJax = {
               the fish would return to their normal flocking behavior once they ate the food.
             </p>
 
-            <h5 class="center-text">Effect of different FOVs on feeding behavior</h5>
+
+
+            <h5 class="center-text mt-4">Effect of different FOVs on feeding behavior</h5>
             <p>
               The results below depict how the fish will only swim towards food within their field of view. As expected, the
               fish with a wider field of view are better at scavenging food. 
             </p>
+
+            <div class="row pt-4 pb-5 pr-5 pl-5">
+              <div class="col-sm">
+                  <div class="card" style="width: 18rem;">
+                      <img src="images/feeding.gif" class="card-img-top p-2">
+                      <div class="card-body">
+                        <h5 class="card-title">Basic Feeding</h5>
+                        <p>Demonstration of feeding with only one fish with the GUI's steering mode on. </p>
+                      </div>
+                    </div>
+              </div>
+              <div class="col-sm">
+                  <div class="card" style="width: 18rem;">
+                      <img src="images/small-fov-feed.gif" class="card-img-top p-2">
+                      <div class="card-body">
+                          <h5 class="card-title">Small FOV</h5>
+                          <p>
+                            With a small field of view, the fish can see food directly in front but will often 
+                            miss food.
+                          </p>
+                      </div>
+                    </div>
+              </div>
+              <div class="col-sm">
+                  <div class="card" style="width: 18rem;">
+                      <img src="images/wide-fov-feed.gif" class="card-img-top p-2">
+                      <div class="card-body">
+                          <h5 class="card-title">Wide FOV</h5>
+                          <p>The fish with the wider FOV is better at spotting food and will swerve significantly reach it.</p>
+                      </div>
+                    </div>
+              </div>
+            </div>
+
+
             <span class="badge badge-danger">ADD RESULTS</span>
             <!-- TODO: Add comparison of different FOVs-->
             <h5 class="center-text">Dealing with multiple fish flakes</h5>
