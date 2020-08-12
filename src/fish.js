@@ -289,7 +289,7 @@ class Fish {
     if (this.computeBehaviors()) {
       var alignment_scaled = math.multiply(3, this.alignment);
       var co_align = math.add(
-        math.multiply(1, this.cohesion),
+        math.multiply(0.7, this.cohesion),
         alignment_scaled
       ); // scaled combination of alignment and cohesion
       var sep_scaled = math.multiply(2, this.separation);

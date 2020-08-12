@@ -188,6 +188,25 @@ MathJax = {
             <iframe src="https://player.vimeo.com/video/447258075" width="640" height="360" class="center" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
             <br />
+            <h5 class="center-text mt-4">Effect of FOV on flocking behavior</h5>
+            <p>
+              In the animations below, the fish are depicted as particles. This is just so that I could get more 
+              boids on the screen to better see the differences. On the left, the smaller FOV and shorter depth of field 
+              is more susceptible to the formation of local flocks as the boids are unable to see further. On the other
+              hand, on the left, with a wider FOV and larger depth of field, we see a large flock form with all the boids
+              since the boids are aware of more neighbors and thus they can all come together with that information.
+            </p>
+
+            <div class="row pt-4 pb-5 pr-5 pl-5">
+              <div class="col-sm">
+                <img src ="images/small-fov.gif" style="width: 100%; height: 89.5%"/>
+                <h5 class="center-text mt-2">Small FOV & Short Depth of Field</h5>
+              </div>
+              <div class="col-sm">
+                <img src ="images/wide-fov.gif" />
+                <h5 class="center-text mt-2">Wide FOV & Large Depth of Field</h5>
+              </div>
+            </div>
 
         <h4 class="center-text mt-4 mb-3">Fish Food</h4>
             <p>To implement the behavior of fish feeding, I first updated the GUI so that clicking would add a new piece of food where
@@ -214,6 +233,7 @@ MathJax = {
               the fish would return to their normal flocking behavior once they ate the food.
             </p>
 
+            <iframe src="https://player.vimeo.com/video/447258252" class="center mt-5 mb-5" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 
             <h5 class="center-text mt-4">Effect of different FOVs on feeding behavior</h5>
@@ -254,12 +274,6 @@ MathJax = {
                     </div>
               </div>
             </div>
-
-
-            <span class="badge badge-danger">ADD RESULTS</span>
-            <!-- TODO: Add comparison of different FOVs-->
-            <h5 class="center-text">Dealing with multiple fish flakes</h5>
-            <span class="badge badge-danger">ADD RESULTS</span>
 
         <h4 class="center-text mt-4 mb-3">Obstacle Avoidance</h4>
         <p>
