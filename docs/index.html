@@ -139,9 +139,16 @@ MathJax = {
                 making sure to only consider neighbors (fish within view). The tricky part was combining them and 
                 finding a good balance of all three of the factors, as there can only be one final steering 
                 direction. I found that with equal weighting, the fish had a tendency to collide still, so I 
-                assigned greater weight to the separation steering direction. In addition, since I felt that 
-                the visual of the fish moving in one direction was important to conveying a visually realistic 
-                animation, I also assigned greater weight to the alignment steering direction.
+                assigned greater weight to the separation steering direction. In addition, since I felt that the 
+                visual of the fish moving in one direction was important to conveying a visually realistic animation, 
+                I also assigned greater weight to the alignment steering direction.
+            </p>
+            <p>
+              However, I did notice that a drawback of the higher weighting of the separation steering was that the fish
+              on the outer edges of the school had a tendency to stray. To try and fix that, I dynamically changed the 
+              velocity of the fish. If the average position of all of its neighbors was very far, the fish increased its
+              velocity in order to catch up with the school. I found that this helped in getting the fish to align themselves
+              to other schools quicker if they ended up straying. 
             </p>
             <p>
               However, there were some situations where the fish would be conflicted and want to go in two different
@@ -151,6 +158,36 @@ MathJax = {
             </p>
 
             <span class="badge badge-danger">ADD RESULTS</span>
+
+            <div class="row pt-4 pb-5 pr-5 pl-5">
+              <div class="col-sm">
+                  <div class="card" style="width: 18rem;">
+                      <img src="images/only-separation.gif" class="card-img-top p-2">
+                      <div class="card-body">
+                        <h5 class="card-title">Only Separation</h5>
+                        <p>The fish move in random directions until they see a fish that they must dodge.</p>
+                      </div>
+                    </div>
+              </div>
+              <div class="col-sm">
+                  <div class="card" style="width: 18rem;">
+                      <img src="images/only-alignment.gif" class="card-img-top p-2">
+                      <div class="card-body">
+                          <h5 class="card-title">Only Alignment</h5>
+                          <p>The fish all move in one direction, but swim independently rather than in one unit.</p>
+                      </div>
+                    </div>
+              </div>
+              <div class="col-sm">
+                  <div class="card" style="width: 18rem;">
+                      <img src="images/cohesion-only.gif" class="card-img-top p-2">
+                      <div class="card-body">
+                          <h5 class="card-title">Only Cohesion</h5>
+                          <p>The fish move to the same position until they converge to one spot.</p>
+                      </div>
+                    </div>
+              </div>
+            </div>
 
          <!-- TODO: Show only alignment-->
          <!-- TODO: Show only cohesion-->
@@ -174,7 +211,7 @@ MathJax = {
               from the fish's position to the food's position. In order to apply use that vector to compute the final direction that 
               the fish would ultimately go in, I applied a weighted average between the separation steering vector and the vector 
               towards the food. I gave the separation a greater weight as with all the fish moving towards the food it tends to 
-              cause collisions.  I also chose to omit the cohesion and alignment factors of flocking behavior as the movement towards 
+              cause collisions. I also chose to omit the cohesion and alignment factors of flocking behavior as the movement towards 
               the food would inherently cause that behavior since all the fish are moving towards the same position: the food.
             </p>
             <p>
@@ -198,7 +235,7 @@ MathJax = {
         <p>
           For obstacle avoidance, I used a combination of techniques outlined in 
           <a href = "https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777">
-            is article</a> and techniques borrowed from raytracing. First, I checked to see if the fish would eventually hit an
+            this article</a> and techniques borrowed from raytracing. First, I checked to see if the fish would eventually hit an
             obstacle, given the current steering direction, by applying an intersection test with the obstacle. In this case,
             the "ray" was cast from the fish towards the obstacle. Since my obstacles were spheres, I applied the ray intersection
             test with spheres outlined in <a href = "https://cs184.eecs.berkeley.edu/sp18/lecture/ray-intro/slide_024">the raytracing

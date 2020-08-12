@@ -29,6 +29,16 @@
 
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Flock Type <span class="badge badge-light" id="flockmode">Fish</span>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" onclick="input('flockmode', 'fish')">Fish</a>
+        <a class="dropdown-item" onclick="input('flockmode', 'particle')">Particle</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Number of Fish <span class="badge badge-light" id="numFish">20</span>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -56,9 +66,9 @@
         Viewing Distance <span class="badge badge-light" id="dist">medium</span>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" onclick="input('dist', 200)">short</a>
-        <a class="dropdown-item" onclick="input('dist', 400)">medium</a>
-        <a class="dropdown-item" onclick="input('dist', 600)">long</a>
+        <a class="dropdown-item" onclick="input('dist', 150)">short</a>
+        <a class="dropdown-item" onclick="input('dist', 300)">medium</a>
+        <a class="dropdown-item" onclick="input('dist', 450)">long</a>
       </div>
     </div>
 

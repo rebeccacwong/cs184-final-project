@@ -11,7 +11,7 @@ class Fish {
     var w = FISH_DIMENSIONS[0];
     this.dir = Utils.unit(dir); // make sure that the direction is normalzed
     this.theta = Utils.rotationTheta(this.dir, [-1, 0]);
-    this.last_dir = [0, 0];
+    this.last_dirs = [];
 
     this.separation = [0, 0];
     this.cohesion = [0, 0];
@@ -27,48 +27,45 @@ class Fish {
 
   /** Keep fish within view by making them appear on the other side of the tank. */
   constrain() {
-    if (this.pos[0] > WIDTH) {
+    if (this.pos[0] > WIDTH + 50) {
       this.pos[0] = 0;
     }
     if (this.pos[0] < 0) {
-      this.pos[0] = WIDTH;
+      this.pos[0] = WIDTH + 50;
     }
-    if (this.pos[1] > HEIGHT) {
+    if (this.pos[1] > HEIGHT + 50) {
       this.pos[1] = 0;
     }
     if (this.pos[1] < 0) {
-      this.pos[1] = HEIGHT;
+      this.pos[1] = HEIGHT + 50;
     }
-
-    // if (
-    //   this.pos[0] > WIDTH ||
-    //   this.pos[0] > HEIGHT ||
-    //   this.pos[1] < 0 ||
-    //   this.pos[1] < 0
-    // ) {
-    //   // turn around
-    //   this.dir = math.subtract(0, this.dir);
-    // }
   }
 
   /** Draws the fish to the screen. */
   show() {
-    imageMode(CENTER);
-    angleMode(RADIANS);
-    translate(this.pos[0], this.pos[1]);
-    push();
-    rotate(this.theta);
-    FISH_IMAGE = FISH_FRAMES[CURR_FRAME];
-    if (frameCount % 3 == 0) {
-      if (CURR_FRAME == 2) {
-        CURR_FRAME = 0;
-      } else {
-        CURR_FRAME++;
-      }
+    if (FLOCK_TYPE == "fish") {
+      imageMode(CENTER);
+      angleMode(RADIANS);
+      translate(this.pos[0], this.pos[1]);
+      push();
+      rotate(this.theta);
+      // FISH_IMAGE = FISH_FRAMES[CURR_FRAME];
+      // if (frameCount % 3 == 0) {
+      //   if (CURR_FRAME == 2) {
+      //     CURR_FRAME = 0;
+      //   } else {
+      //     CURR_FRAME++;
+      //   }
+      // }
+      image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
+      pop();
+      translate(-this.pos[0], -this.pos[1]);
+    } else {
+      fill(0, 255, 0);
+      noStroke();
+      ellipse(this.pos[0], this.pos[1], 10);
+      stroke(255);
     }
-    image(FISH_IMAGE, 0, 0, FISH_DIMENSIONS[0], FISH_DIMENSIONS[1]);
-    pop();
-    translate(-this.pos[0], -this.pos[1]);
   }
 
   /** Displays the direction vectors on the screen. */
@@ -119,12 +116,15 @@ class Fish {
   }
 
   /** Updates THIS.COHESION, THIS.ALIGNMENT, and THIS.SEPARATION with direction vectors
-   * for each steering force. Returns true if there have been any changes.
+   * for each steering force. Also updates THIS.VELOCITY to be the average velocity among
+   * all the neighbors. Returns true if there have been any changes.
    */
   computeBehaviors() {
-    this.alignment = [0, 0];
-    this.cohesion = [0, 0];
     this.separation = [0, 0];
+    this.cohesion = [0, 0];
+    this.alignment = [0, 0];
+
+    var avg_velocity = 0;
 
     var count = 0;
     var sep_count = 0;
@@ -138,18 +138,18 @@ class Fish {
         // do nothing
       } else {
         if (this.inView(fish) && this.inTank(fish.pos)) {
-          // compute cohesion and alignment for fish that are visible
-
           var diff_pos = math.subtract(fish.pos, this.pos);
 
+          // compute cohesion and alignment for fish that are visible
           this.cohesion = math.add(this.cohesion, diff_pos);
           this.alignment = math.add(this.alignment, fish.dir);
+          avg_velocity += fish.velocity;
           count++;
 
           if (math.norm(diff_pos) <= SEPARATION_FACTOR) {
             // apply separation, steer AWAY from the neighbor
 
-            var weight = 5 * (SEPARATION_FACTOR - math.norm(diff_pos)); // smaller distance will have more weight
+            var weight = 3 * (SEPARATION_FACTOR - math.norm(diff_pos)); // smaller distance will have more weight
             var reversed = math.subtract(0, diff_pos);
             this.separation = math.add(this.separation, reversed);
             this.separation = math.multiply(weight, this.separation);
@@ -161,14 +161,21 @@ class Fish {
     }
 
     if (count > 0) {
-      this.alignment[0] /= count;
-      this.alignment[1] /= count;
-      this.cohesion[0] /= count;
-      this.cohesion[1] /= count;
+      this.alignment = math.multiply(1 / count, this.alignment);
+      this.cohesion = math.multiply(1 / count, this.cohesion); // average position it should eventually end up in
+
+      this.velocity = avg_velocity / count;
+
+      if (
+        math.norm(this.cohesion) >
+        this.pos + math.multiply(this.velocity, 10)
+      ) {
+        this.velocity += this.acceleration; // speed up
+      }
 
       if (sep_count > 0) {
-        this.separation[0] /= sep_count;
-        this.separation[1] /= sep_count;
+        this.separation[0] /= count;
+        this.separation[1] /= count;
       }
 
       this.alignment = Utils.unit(this.alignment);
@@ -228,7 +235,7 @@ class Fish {
       if (this.inView(obj)) {
         d = math.norm(diffVec);
         if (obj.isFood && !obj.ignore) {
-          if (d <= 4) {
+          if (d <= 10) {
             // close enough to the food that we will consider the food "eaten"
             CollisionObj.TO_DELETE.push(obj);
           } else if (d < closest) {
@@ -253,16 +260,16 @@ class Fish {
             var to = math.add(avoid_vec, obj.pos);
             new_dir = math.subtract(to, this.pos);
 
-            if (MODE == "steering") {
-              stroke(0, 0, 0);
-              fill(0, 0, 0);
-              ellipse(hit[0], hit[1], 10);
-              stroke(0, 255, 0);
-              line(this.pos[0], this.pos[1], to[0], to[1]);
+            // if (MODE == "steering") {
+            //   stroke(0, 0, 0);
+            //   fill(0, 0, 0);
+            //   ellipse(hit[0], hit[1], 10);
+            //   stroke(0, 255, 0);
+            //   line(this.pos[0], this.pos[1], to[0], to[1]);
 
-              fill(255, 255, 255);
-              stroke(255, 255, 255);
-            }
+            //   fill(255, 255, 255);
+            //   stroke(255, 255, 255);
+            // }
           }
         }
       }
@@ -280,12 +287,12 @@ class Fish {
    */
   flock() {
     if (this.computeBehaviors()) {
-      var alignment_scaled = [this.alignment[0] * 3, this.alignment[1] * 1.5];
+      var alignment_scaled = math.multiply(3, this.alignment);
       var co_align = math.add(
         math.multiply(1, this.cohesion),
         alignment_scaled
       ); // scaled combination of alignment and cohesion
-      var sep_scaled = math.multiply(4.5, this.separation);
+      var sep_scaled = math.multiply(2, this.separation);
       var all = math.add(co_align, sep_scaled); // weighted combination of all three factors
       var new_dir = Utils.unit(all);
 
@@ -303,17 +310,19 @@ class Fish {
   /** Updates instance attributes of fish to reflect the movement. */
   update() {
     // update the steering behavior
+
     var collision_dir = this.considerObstacles();
     if (collision_dir) {
       if (this.computeBehaviors == true) {
         // take weighted average of collision_dir, separation, and current direction
         var weightedSum = math.add(
-          math.multiply(6, this.separation),
+          math.multiply(2, this.separation),
           collision_dir,
           this.dir
         );
         this.dir = Utils.unit(math.multiply(1 / 3, weightedSum));
       } else {
+        // no neighbors within sight
         var weightedSum = math.add(math.multiply(2, collision_dir), this.dir);
         this.dir = Utils.unit(math.multiply(1 / 2, weightedSum));
       }
@@ -321,17 +330,20 @@ class Fish {
       this.dir = this.flock();
     }
 
-    // var temp_dir = this.dir;
-    // this.dir = Utils.unit(
-    //   math.multiply(0.5, math.add(this.dir, this.last_dir))
-    // );
-    // this.last_dir = temp_dir;
+    // var avg_dir = [0, 0];
+    // for (var i = 0; i < this.last_dirs.length; i++) {
+    //   math.add(avg_dir, this.last_dirs[i]);
+    // }
+    // if (this.last_dirs.length == 4) {
+    // }
+
+    // update rotation according to new direction
     this.theta = Utils.rotationTheta(this.dir, [-1, 0]);
 
     // update the position and velocity
     if (math.abs(this.velocity) > MAX_VELOCITY) {
-      this.velocity = Math.random() * 3 + 3;
-      this.acceleration = Math.random() * 3 + 1;
+      this.velocity = math.random() * this.velocity * 0.5 + this.velocity * 0.5;
+      this.acceleration = Math.random() * 2 + 1;
     }
 
     var vec = math.multiply(this.velocity, this.dir);

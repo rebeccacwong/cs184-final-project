@@ -7,26 +7,27 @@ let SPATIAL_MAP = {};
 let ALL_FISH = []; // array of all the fish objects
 let DROPDOWN = false;
 
-// global parameters
+// modifiable global parameters
 let WIDTH = 0;
 let HEIGHT = 0;
 let FOV = Math.PI / 2; // range: [0, 2pi]
 let MODE = "default";
-let VIEWING_DIST = 600;
-// const FISH_DIMENSIONS = [45, 25];
-const FISH_DIMENSIONS = [60, 35];
-const SEPARATION_FACTOR = 70;
-const MAX_VELOCITY = 6;
+let FLOCK_TYPE = "fish";
+let VIEWING_DIST = 300;
+// const FISH_DIMENSIONS = [38, 33];
+const FISH_DIMENSIONS = [35, 20];
+let SEPARATION_FACTOR = 50;
+let MAX_VELOCITY = 7;
 
 // input variables
 var NUM_FISH = 20;
 
 function preload() {
-  // FISH_IMAGE = loadImage("../scene/fish.png");
-  // BACKGROUND = loadImage("../scene/aquarium.jpg");
-  FISH_FRAMES.push(loadImage("../scene/fish1.png"));
-  FISH_FRAMES.push(loadImage("../scene/fish2.png"));
-  FISH_FRAMES.push(loadImage("../scene/fish3.png"));
+  FISH_IMAGE = loadImage("../scene/fish.png");
+  BACKGROUND = loadImage("../scene/background.png");
+  // FISH_FRAMES.push(loadImage("../scene/fish1.png"));
+  // FISH_FRAMES.push(loadImage("../scene/fish2.png"));
+  // FISH_FRAMES.push(loadImage("../scene/fish3.png"));
 }
 
 function setup() {
@@ -36,10 +37,20 @@ function setup() {
   CollisionObj.OBJS = [];
   CollisionObj.TO_DELETE = [];
 
-  createCanvas(1400, 1000);
-  frameRate(14);
+  createCanvas(1500, 800);
+  // createCanvas(800, 800);
   WIDTH = width;
   HEIGHT = height;
+
+  if (FLOCK_TYPE == "particle") {
+    SEPARATION_FACTOR = 25;
+    MAX_VELOCITY = 10;
+    frameRate(50);
+  } else {
+    SEPARATION_FACTOR = 50;
+    MAX_VELOCITY = 4;
+  }
+  frameRate(12);
 
   for (var i = 0; i < NUM_FISH; i++) {
     // initialize a fish in a random position with a random unit direction vector
@@ -54,7 +65,7 @@ function setup() {
   }
 
   // add collision objects to the scene
-  new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
+  // new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
 }
 
 /** Adds food to the display and into memory. */
@@ -83,7 +94,7 @@ function draw() {
 
   clear();
   background(0, 51, 102);
-  // image(BACKGROUND, WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT);
+  image(BACKGROUND, WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT);
 
   for (var i = 0; i < CollisionObj.TO_DELETE.length; i++) {
     var obj = CollisionObj.TO_DELETE[i];
@@ -138,9 +149,9 @@ function input(param, value) {
       break;
     case "dist":
       VIEWING_DIST = value;
-      if (value == 200) {
+      if (value == 150) {
         document.getElementById(param).innerHTML = "short";
-      } else if (value == 400) {
+      } else if (value == 300) {
         document.getElementById(param).innerHTML = "medium";
       } else {
         document.getElementById(param).innerHTML = "long";
@@ -154,6 +165,12 @@ function input(param, value) {
         document.getElementById(param).innerHTML = "Show Steering";
       }
       return;
+    case "flockmode":
+      FLOCK_TYPE = value;
+      document.getElementById(param).innerHTML =
+        value.charAt(0).toUpperCase() + value.slice(1);
+      document.getElementById(param).innerHTML =
+        value.charAt(0).toUpperCase() + value.slice(1);
   }
 
   ALL_FISH = [];
