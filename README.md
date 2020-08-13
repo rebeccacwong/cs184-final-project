@@ -2,7 +2,7 @@
 A flocking simulation created as my Final Project for CS184: Computer Graphics and Imaging. Created using Javascript.
 
 ## Setup
-To run this project, install it locally and then setup a local server using the following statement. Open on localhost:8000.
+To run this project, install it locally and then setup a local server using the following statement. Open on localhost:8000 and navigate to sim.html.
 ```
 $ python3 -m http.server
 ```
