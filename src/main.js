@@ -1,6 +1,6 @@
 // tools
 let FISH_IMAGE;
-let FISH_FRAMES = [];
+let ROCk;
 let CURR_FRAME = 0;
 let BACKGROUND;
 let SPATIAL_MAP = {};
@@ -16,7 +16,7 @@ let FLOCK_TYPE = "fish";
 let VIEWING_DIST = 300;
 // const FISH_DIMENSIONS = [38, 33];
 const FISH_DIMENSIONS = [35, 20];
-let SEPARATION_FACTOR = 50;
+let SEPARATION_FACTOR = 70;
 let MAX_VELOCITY = 7;
 
 // input variables
@@ -25,9 +25,7 @@ var NUM_FISH = 20;
 function preload() {
   FISH_IMAGE = loadImage("../scene/fish.png");
   BACKGROUND = loadImage("../scene/background.png");
-  // FISH_FRAMES.push(loadImage("../scene/fish1.png"));
-  // FISH_FRAMES.push(loadImage("../scene/fish2.png"));
-  // FISH_FRAMES.push(loadImage("../scene/fish3.png"));
+  ROCK = loadImage("../scene/rock.png");
 }
 
 function setup() {
@@ -52,9 +50,11 @@ function setup() {
   }
   frameRate(12);
 
+  // ALL_FISH.push(new Fish([WIDTH, HEIGHT / 2], [-1, 0], FOV, VIEWING_DIST));
+
   for (var i = 0; i < NUM_FISH; i++) {
     // initialize a fish in a random position with a random unit direction vector
-    fish = new Fish(
+    var fish = new Fish(
       [Math.random() * width, Math.random() * height],
       Utils.generateDir(),
       FOV,
@@ -65,7 +65,7 @@ function setup() {
   }
 
   // add collision objects to the scene
-  // new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
+  new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
 }
 
 /** Adds food to the display and into memory. */

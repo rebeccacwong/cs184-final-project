@@ -34,8 +34,9 @@ class CollisionObj {
     if (this.isFood) {
       ellipse(this.pos[0], this.pos[1], 8);
     } else {
-      fill(255, 0, 0);
-      ellipse(this.pos[0], this.pos[1], this.radius * 2);
+      fill(144, 238, 144);
+      image(ROCK, this.pos[0], this.pos[1], this.radius * 2, this.radius * 2);
+      // ellipse(this.pos[0], this.pos[1], this.radius * 2);
       fill(255, 255, 255);
     }
   }

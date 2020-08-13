@@ -256,20 +256,20 @@ class Fish {
               -(hit[1] - this.pos[1]),
               hit[0] - this.pos[0],
             ]); // direction vector
-            avoid_vec = math.multiply(obj.radius + 80, avoid_vec); // 50 is arbitrary, adds space between fish & obstacle
+            avoid_vec = math.multiply(obj.radius + 100, avoid_vec); // 50 is arbitrary, adds space between fish & obstacle
             var to = math.add(avoid_vec, obj.pos);
             new_dir = math.subtract(to, this.pos);
 
-            // if (MODE == "steering") {
-            //   stroke(0, 0, 0);
-            //   fill(0, 0, 0);
-            //   ellipse(hit[0], hit[1], 10);
-            //   stroke(0, 255, 0);
-            //   line(this.pos[0], this.pos[1], to[0], to[1]);
+            if (MODE == "steering") {
+              stroke(0, 0, 0);
+              fill(0, 0, 0);
+              ellipse(hit[0], hit[1], 10);
+              stroke(0, 255, 0);
+              line(this.pos[0], this.pos[1], to[0], to[1]);
 
-            //   fill(255, 255, 255);
-            //   stroke(255, 255, 255);
-            // }
+              fill(255, 255, 255);
+              stroke(255, 255, 255);
+            }
           }
         }
       }
@@ -292,7 +292,7 @@ class Fish {
         math.multiply(0.7, this.cohesion),
         alignment_scaled
       ); // scaled combination of alignment and cohesion
-      var sep_scaled = math.multiply(2, this.separation);
+      var sep_scaled = math.multiply(2.25, this.separation);
       var all = math.add(co_align, sep_scaled); // weighted combination of all three factors
       var new_dir = Utils.unit(all);
 
