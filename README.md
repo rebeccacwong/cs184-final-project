@@ -2,7 +2,7 @@
 A flocking simulation created as my Final Project for CS184: Computer Graphics and Imaging. Created using Javascript.
 
 ## Usage
-Interact with the simulation [here](https://rebeccacwong.github.io/cs184-final-project/sim.html).
+Interact with the simulation [here](https://rebeccacwong.github.io/cs184-final-project/src/sim.html).
 
 ## Libraries
 * [p5.js](https://p5js.org/)
