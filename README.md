@@ -1,11 +1,8 @@
 # CS184 Final Project: School of Fish
 A flocking simulation created as my Final Project for CS184: Computer Graphics and Imaging. Created using Javascript.
 
-## Setup
-To run this project, install it locally and then setup a local server using the following statement. Open on localhost:8000 and navigate to sim.html.
-```
-$ python3 -m http.server
-```
+## Usage
+Interact with the simulation [here](https://rebeccacwong.github.io/cs184-final-project/sim.html).
 
 ## Libraries
 * [p5.js](https://p5js.org/)
