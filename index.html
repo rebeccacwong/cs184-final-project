@@ -266,7 +266,7 @@
 
         <h4 class="center-text mt-4 mb-3">Obstacle Avoidance</h4>
         <p>
-          For obstacle avoidance, I used a combination of techniques outlined in 
+          For obstacle avoidance, I used a took inspiration from
           <a href = "https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777">
             this article</a> and techniques borrowed from raytracing. First, I checked to see if the fish would eventually hit an
             obstacle, given the current steering direction, by applying an intersection test with the obstacle. In this case,
@@ -298,8 +298,10 @@
         </div>
 
         <p>
-          The method for obstacle avoidance is pretty effective but not 100% effective, as there are some cases where the fish may
-          be stuck between the obstacle and another fish.
+          Although this exact implementation method of using a perpendicular avoidance vector was not mentioned in any of the reference
+            material I read, I came up with this implementation and chose to use it because it made most sense to me and seemed to be 
+            about as effective as others. Like other implementation methods, it is pretty effective but not 100% effective, as there 
+            are some cases where the fish may be stuck between the obstacle and another fish.
           The gif below includes my results with the viewing mode changed to steering to see the aforementioned method at work. 
           For viewing purposes, I froze the frame that shows the green new direction vector. In the actual simulation, there is 
           no pause at this stage, as seen in the video following it.
