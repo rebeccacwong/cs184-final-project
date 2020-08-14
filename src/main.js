@@ -18,6 +18,7 @@ let VIEWING_DIST = 300;
 const FISH_DIMENSIONS = [35, 20];
 let SEPARATION_FACTOR = 70;
 let MAX_VELOCITY = 7;
+let OBSTACLES = false;
 
 // input variables
 var NUM_FISH = 20;
@@ -65,7 +66,9 @@ function setup() {
   }
 
   // add collision objects to the scene
-  new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
+  if (OBSTACLES) {
+    new CollisionObj([WIDTH / 2, HEIGHT / 2], "obstacle", 100);
+  }
 }
 
 /** Adds food to the display and into memory. */
@@ -171,6 +174,12 @@ function input(param, value) {
         value.charAt(0).toUpperCase() + value.slice(1);
       document.getElementById(param).innerHTML =
         value.charAt(0).toUpperCase() + value.slice(1);
+    case "obstacle":
+      if (value == "None") {
+        OBSTACLES = false;
+      } else {
+        OBSTACLES = true;
+      }
   }
 
   ALL_FISH = [];
