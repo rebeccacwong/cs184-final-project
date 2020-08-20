@@ -24,9 +24,9 @@ let OBSTACLES = false;
 var NUM_FISH = 20;
 
 function preload() {
-  FISH_IMAGE = loadImage("./cs184-final-project/scene/fish.png");
-  BACKGROUND = loadImage("./cs184-final-project/scene/background.png");
-  ROCK = loadImage("cs184-final-project/scene/rock.png");
+  FISH_IMAGE = loadImage("./scene/fish.png");
+  BACKGROUND = loadImage("./scene/background.png");
+  ROCK = loadImage("./scene/rock.png");
 }
 
 function setup() {
